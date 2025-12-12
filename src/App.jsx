@@ -73,7 +73,7 @@ function App() {
     setView('landing');
     setStudentHistory(null);
     setStudentId('');
-    setAllTests([]);
+    // Keep allTests so leaderboard still shows on landing page
     setLoading(false); // Ensure loading is reset
   };
 

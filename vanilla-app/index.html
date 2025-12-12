@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Analysis Portal</title>
+    
+    <!-- CDNs -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app">
+        <!-- Background Elements -->
+        <div class="bg-orb orb-1"></div>
+        <div class="bg-orb orb-2"></div>
+
+        <!-- LANDING PAGE -->
+        <div id="landing-section" class="container fade-in">
+            <header>
+                <div class="badge">
+                    <i class="ri-pulse-line"></i> Advanced Analytics
+                </div>
+                <h1>Mock <span class="text-gradient">Analysis</span> Portal</h1>
+                <p>Upload your class result sheets to unlock insights.</p>
+            </header>
+
+            <div class="glass-card upload-card">
+                <div id="drop-zone">
+                    <div class="icon-circle">
+                        <i class="ri-upload-cloud-2-line"></i>
+                    </div>
+                    <h3>Upload Result Sheets</h3>
+                    <p class="subtext">Drag & drop .xlsx files here</p>
+                    <p class="mini-text">(Upload multiple for trend analysis)</p>
+                    <input type="file" id="fileInput" multiple accept=".xlsx, .xls" hidden>
+                </div>
+
+                <div id="file-list"></div>
+
+                <div class="input-group">
+                    <label>Enter Student ID</label>
+                    <div class="search-box">
+                        <i class="ri-search-line"></i>
+                        <input type="text" id="studentIdInput" placeholder="e.g., STU001">
+                        <button id="analyzeBtn" class="btn-neon" disabled>
+                            Analyze Now <i class="ri-arrow-right-line"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD PAGE -->
+        <div id="dashboard-section" class="container hidden">
+            <nav>
+                <div class="nav-content">
+                    <div>
+                        <h2 id="studentNameDisplay">Hello, Student</h2>
+                        <p id="analysisMeta">Analysis Result</p>
+                    </div>
+                    <button class="btn-ghost" onclick="resetApp()">
+                        <i class="ri-upload-line"></i> Upload New
+                    </button>
+                </div>
+            </nav>
+
+            <div class="stats-grid">
+                <!-- Score Card -->
+                <div class="glass-card stat-card card-cyan">
+                    <div class="stat-content">
+                        <span class="stat-label">Total Score</span>
+                        <h3 id="statScore">0</h3>
+                        <p id="statAttempted" class="stat-sub">/0 Attempted</p>
+                    </div>
+                    <div class="stat-icon"><i class="ri-target-line"></i></div>
+                </div>
+
+                <!-- Rank Card -->
+                <div class="glass-card stat-card card-yellow">
+                    <div class="stat-content">
+                        <span class="stat-label">Class Rank</span>
+                        <h3 id="statRank">#0</h3>
+                        <p id="statTop" class="stat-sub">Top 0%</p>
+                    </div>
+                    <div class="stat-icon"><i class="ri-trophy-line"></i></div>
+                </div>
+
+                <!-- Percentile Card -->
+                <div class="glass-card stat-card card-purple">
+                    <div class="stat-content">
+                        <span class="stat-label">Percentile</span>
+                        <h3 id="statPercentile">0%</h3>
+                        <p class="stat-sub">Vs Classmates</p>
+                    </div>
+                    <div class="stat-icon"><i class="ri-medal-line"></i></div>
+                </div>
+
+                <!-- Trend Card -->
+                <div class="glass-card stat-card card-trend">
+                    <div id="trendIndicator" class="trend-box">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="glass-card chart-card wide">
+                    <h3><i class="ri-line-chart-line"></i> Performance Trend</h3>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card chart-card">
+                    <h3><i class="ri-bar-chart-groupped-line"></i> Class Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

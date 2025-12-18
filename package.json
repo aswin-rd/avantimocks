@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.14.1",
     "@google/generative-ai": "^0.24.1",
     "@mui/material": "^7.3.6",
+    "@vercel/analytics": "^1.6.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.26",
     "katex": "^0.16.27",

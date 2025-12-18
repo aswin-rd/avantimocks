@@ -1,4 +1,5 @@
 import * as XLSX from 'xlsx';
+import { calculatePredictedPercentile } from './jeePercentileUtils';
 
 /**
  * Robust Parsing Logic (Header Scanning)
@@ -188,12 +189,16 @@ export const processClassData = (students) => {
 
     // Percentile: (Students with score <= studentScore / Total) * 100
     const studentsWithLessOrEqual = sorted.filter(s => s.score <= student.score).length;
-    const percentile = (studentsWithLessOrEqual / totalStudents) * 100;
+    const classPercentile = (studentsWithLessOrEqual / totalStudents) * 100;
+
+    // Predicted Percentile (National Standard)
+    const predictedPercentile = calculatePredictedPercentile(student.score, '2025');
 
     return {
       ...student,
       rank: currentRank,
-      percentile: Number(percentile.toFixed(2))
+      percentile: Number(classPercentile.toFixed(2)),
+      predictedPercentile: Number(predictedPercentile)
     };
   });
 

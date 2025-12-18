@@ -116,6 +116,69 @@ body::before {
   width: 100%;
 }
 
+/* Desktop flex layout for landing page */
+.desktop-flex {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Give leaderboard more space */
+.desktop-flex>.leaderboard-wrapper {
+  flex: 2;
+  max-width: 60%;
+  min-height: 100vh;
+}
+
+/* Right panel (header + upload / analysis) */
+.right-panel {
+  flex: 1;
+  max-width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 50%;
+  transform: translateY(-50%);
+  height: fit-content;
+}
+
+/* Archive link styling */
+.archive-link {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  color: rgb(107, 114, 128);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color 0.3s;
+  z-index: 50;
+  padding: 0.5rem;
+}
+
+.archive-link:hover {
+  color: var(--primary-neon);
+}
+
+/* Stack columns on smaller screens */
+@media (max-width: 900px) {
+  .desktop-flex {
+    flex-direction: column;
+  }
+
+  .desktop-flex>.leaderboard-wrapper,
+  .right-panel {
+    max-width: 100%;
+    position: static;
+    min-height: auto;
+  }
+}
+
 header {
   text-align: center;
   margin-bottom: 2rem;

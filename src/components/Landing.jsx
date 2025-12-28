@@ -18,23 +18,24 @@ const Landing = ({ onAnalyze, loading, allTests, onOpenArchive }) => {
                 {/* Leaderboard column */}
                 {allTests && allTests.length > 0 && (
                     <div className="leaderboard-wrapper">
-                        <Leaderboard allTests={allTests} currentStudentId={null} />
+                        <div className="leaderboard-wrapper">
+                            <Leaderboard
+                                allTests={allTests}
+                                currentStudentId={null}
+                                onStudentClick={(studentId) => onAnalyze([], studentId)}
+                            />
+                        </div>
                     </div>
                 )}
 
                 {/* Right panel: header + upload card */}
                 <div className="right-panel">
                     <header>
-                        <div className="badge" style={{ cursor: 'pointer' }} onClick={onOpenArchive}>
+                        <div className="badge">
                             <Activity size={16} /> Advanced Analytics
                         </div>
                         {/* Hidden/Subtle Archive Link */}
-                        <div
-                            onClick={onOpenArchive}
-                            className="archive-link"
-                        >
-                            <Library size={14} /> OLD PAPERS
-                        </div>
+
                         <h1>Mock <span className="text-gradient">Analysis</span> Portal</h1>
                         <p>Enter your Student ID to fetch results from the Live Class Sheet.</p>
                     </header>

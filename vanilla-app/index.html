@@ -1,23 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mock Analysis Portal</title>
-    
+
     <!-- CDNs -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <div id="app">
         <!-- Background Elements -->
         <div class="bg-orb orb-1"></div>
         <div class="bg-orb orb-2"></div>
+
+        <!-- LOADING SCREEN (Initially Hidden) -->
+        <div id="loading-screen" class="hidden">
+            <div class="relative flex flex-col items-center transform scale-125 md:scale-150">
+                <!-- Glitch Effect Container -->
+                <div class="glitch-container">
+                    <span class="glitch-text" data-text="SYSTEM_ANALYSIS">SYSTEM_ANALYSIS</span>
+                    <span style="color:#06b6d4; font-family:monospace;">PROCESSING...</span>
+                </div>
+
+                <!-- CUSTOM LOADER -->
+                <div class="styled-loader-wrapper">
+                    <div class="loader">
+                        <svg viewBox="0 0 80 80">
+                            <circle r="32" cy="40" cx="40" id="test" />
+                        </svg>
+                    </div>
+                    <div class="loader triangle">
+                        <svg viewBox="0 0 86 80">
+                            <polygon points="43 8 79 72 7 72" />
+                        </svg>
+                    </div>
+                    <div class="loader">
+                        <svg viewBox="0 0 80 80">
+                            <rect height="64" width="64" y="8" x="8" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Terminal Output -->
+                <div
+                    style="margin-top:2rem; font-size:12px; color:#888; font-family:monospace; display:flex; flex-direction:column; align-items:center; gap:5px; letter-spacing:2px;">
+                    <span class="animate-pulse">INITIALIZING_CORE_MODULES...</span>
+                    <span style="color:#bc13fe" class="animate-pulse">CONNECTING_TO_MAINFRAME...</span>
+                </div>
+            </div>
+        </div>
+
 
         <!-- LANDING PAGE -->
         <div id="landing-section" class="container fade-in">
@@ -127,4 +167,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>

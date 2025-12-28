@@ -71,7 +71,7 @@ const Dashboard = ({ studentHistory, studentId, allTests, onBack }) => {
                 <div className="glass-card stat-card card-purple">
                     <div className="stat-content">
                         <span className="stat-label">Predicted %ile</span>
-                        <h3>{currentTest.predictedPercentile || '--'}</h3>
+                        <h3>{currentTest.predictedPercentile ? Number(currentTest.predictedPercentile).toFixed(2) : '--'}%</h3>
                         <p className="stat-sub">National Estimate (2025)</p>
                     </div>
                     <div className="stat-icon"><Award size={24} /></div>

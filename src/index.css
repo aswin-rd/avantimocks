@@ -168,14 +168,31 @@ body::before {
 /* Stack columns on smaller screens */
 @media (max-width: 900px) {
   .desktop-flex {
-    flex-direction: column;
+    flex-direction: column-reverse;
+    /* Put Input (Right Panel) on TOP */
+    gap: 3rem;
   }
 
-  .desktop-flex>.leaderboard-wrapper,
+  .desktop-flex>.leaderboard-wrapper {
+    max-width: 100%;
+    width: 100%;
+    min-height: auto;
+  }
+
   .right-panel {
     max-width: 100%;
+    width: 100%;
     position: static;
-    min-height: auto;
+    /* Reset sticky position */
+    transform: none;
+    /* Remove vertical centering transform */
+    top: auto;
+    margin-top: 2rem;
+  }
+
+  /* Adjust leaderboard table for mobile to prevent horizontal scoll if possible, or allow it cleanly */
+  .leaderboard-wrapper {
+    overflow-x: auto;
   }
 }
 
@@ -428,6 +445,14 @@ nav {
 @media (max-width: 900px) {
   .charts-grid {
     grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .chart-card {
+    margin-bottom: 2rem;
+    /* Extra safety for spacing */
   }
 }
 

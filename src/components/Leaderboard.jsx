@@ -86,7 +86,7 @@ const darkTheme = createTheme({
     }
 });
 
-const Leaderboard = ({ currentTest, currentStudentId, allTests = [] }) => {
+const Leaderboard = ({ currentTest, currentStudentId, allTests = [], onStudentClick }) => {
     const [view, setView] = useState('Overall');
 
     // Calculate Overall Data
@@ -154,7 +154,7 @@ const Leaderboard = ({ currentTest, currentStudentId, allTests = [] }) => {
             <Box sx={{ width: '100%', maxWidth: 900, margin: '2rem auto', px: { xs: 1, md: 0 } }}>
 
                 {/* Header */}
-                <Box sx={{ display: 'flex', flexDirection: { xs: 'col', md: 'row' }, justifyContent: 'space-between', alignItems: 'center', mb: 3, gap: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: 'center', mb: 3, gap: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Avatar sx={{ bgcolor: 'rgba(6, 182, 212, 0.15)', color: 'primary.main' }}>
                             <Trophy size={20} />
@@ -165,7 +165,7 @@ const Leaderboard = ({ currentTest, currentStudentId, allTests = [] }) => {
                         </Box>
                     </Box>
 
-                    <Paper sx={{ bgcolor: 'rgba(0,0,0,0.3)', p: 0.5, borderRadius: 3 }}>
+                    <Paper sx={{ bgcolor: 'rgba(0,0,0,0.3)', p: 0.5, borderRadius: 3, maxWidth: { xs: '100%', md: '60%' }, overflow: 'hidden' }}>
                         <Tabs
                             value={view}
                             onChange={handleChangeTab}
@@ -192,71 +192,75 @@ const Leaderboard = ({ currentTest, currentStudentId, allTests = [] }) => {
                                 <TableCell width="25%" align="right">{view === 'Overall' ? 'Total Points' : 'Score'}</TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody component={AnimatePresence}>
-                            {displayData.slice(0, 50).map((student, index) => {
-                                const styles = getRankStyles(student.rank);
-                                const isMe = student.id === currentStudentId;
+                        <TableBody>
+                            <AnimatePresence>
+                                {displayData.slice(0, 50).map((student, index) => {
+                                    const styles = getRankStyles(student.rank);
+                                    const isMe = student.id === currentStudentId;
 
-                                return (
-                                    <TableRow
-                                        key={student.id} // Stable key if possible, else index
-                                        component={motion.tr}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index * 0.03, duration: 0.3 }}
-                                        sx={{
-                                            background: isMe ? 'rgba(6, 182, 212, 0.15) !important' : styles.bg,
-                                            borderLeft: isMe ? '4px solid #06b6d4' : (student.rank <= 3 ? `4px solid ${student.rank === 1 ? '#eab308' : student.rank === 2 ? '#94a3b8' : '#c2410c'}` : '4px solid transparent')
-                                        }}
-                                    >
-                                        <TableCell align="center">
-                                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                                {styles.icon}
-                                            </Box>
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                <Avatar
-                                                    sx={{
-                                                        bgcolor: getAvatarColor(student.name),
-                                                        fontWeight: 'bold',
-                                                        width: 32, height: 32,
-                                                        fontSize: '0.875rem'
-                                                    }}
-                                                >
-                                                    {student.name ? student.name.charAt(0) : '?'}
-                                                </Avatar>
-                                                <Box sx={{ overflow: 'hidden' }}>
-                                                    <Typography variant="subtitle2" noWrap sx={{ color: isMe ? 'primary.main' : 'text.primary' }}>
-                                                        {student.name || 'Unknown'} {isMe && <Chip label="YOU" size="small" color="primary" sx={{ height: 16, fontSize: '0.6rem', fontWeight: 'bold' }} />}
-                                                    </Typography>
-                                                    <Typography variant="caption" color="text.secondary" fontFamily="monospace">
-                                                        {student.id}
-                                                    </Typography>
+                                    return (
+                                        <TableRow
+                                            key={student.id} // Stable key if possible, else index
+                                            component={motion.tr}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.03, duration: 0.3 }}
+                                            onClick={() => onStudentClick && onStudentClick(student.id)}
+                                            sx={{
+                                                cursor: onStudentClick ? 'pointer' : 'default',
+                                                background: isMe ? 'rgba(6, 182, 212, 0.15) !important' : styles.bg,
+                                                borderLeft: isMe ? '4px solid #06b6d4' : (student.rank <= 3 ? `4px solid ${student.rank === 1 ? '#eab308' : student.rank === 2 ? '#94a3b8' : '#c2410c'}` : '4px solid transparent')
+                                            }}
+                                        >
+                                            <TableCell align="center">
+                                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                    {styles.icon}
                                                 </Box>
-                                            </Box>
-                                        </TableCell>
+                                            </TableCell>
 
-                                        <TableCell align="right">
-                                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontFamily: 'monospace', color: view === 'Overall' ? 'secondary.main' : 'primary.main' }}>
-                                                {view === 'Overall' ? student.totalScore : student.score}
-                                            </Typography>
-                                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                                                {view === 'Overall' ? `${student.testsTaken} Tests` : `${student.percentile}%ile`}
-                                            </Typography>
+                                            <TableCell>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                    <Avatar
+                                                        sx={{
+                                                            bgcolor: getAvatarColor(student.name),
+                                                            fontWeight: 'bold',
+                                                            width: 32, height: 32,
+                                                            fontSize: '0.875rem'
+                                                        }}
+                                                    >
+                                                        {student.name ? student.name.charAt(0) : '?'}
+                                                    </Avatar>
+                                                    <Box sx={{ overflow: 'hidden' }}>
+                                                        <Typography variant="subtitle2" noWrap sx={{ color: isMe ? 'primary.main' : 'text.primary' }}>
+                                                            {student.name || 'Unknown'} {isMe && <Chip label="YOU" size="small" color="primary" sx={{ height: 16, fontSize: '0.6rem', fontWeight: 'bold' }} />}
+                                                        </Typography>
+                                                        <Typography variant="caption" color="text.secondary" fontFamily="monospace">
+                                                            {student.id}
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </TableCell>
+
+                                            <TableCell align="right">
+                                                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontFamily: 'monospace', color: view === 'Overall' ? 'secondary.main' : 'primary.main' }}>
+                                                    {view === 'Overall' ? student.totalScore : student.score}
+                                                </Typography>
+                                                <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                                    {view === 'Overall' ? `${student.testsTaken} Tests` : `${student.percentile}%ile`}
+                                                </Typography>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+
+                                {displayData.length === 0 && (
+                                    <TableRow>
+                                        <TableCell colSpan={3} align="center" sx={{ py: 8 }}>
+                                            <Typography variant="body1" color="text.secondary">No rankings available yet.</Typography>
                                         </TableCell>
                                     </TableRow>
-                                );
-                            })}
-
-                            {displayData.length === 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={3} align="center" sx={{ py: 8 }}>
-                                        <Typography variant="body1" color="text.secondary">No rankings available yet.</Typography>
-                                    </TableCell>
-                                </TableRow>
-                            )}
+                                )}
+                            </AnimatePresence>
                         </TableBody>
                     </Table>
                 </TableContainer>

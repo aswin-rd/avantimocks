@@ -173,22 +173,28 @@ export const processClassData = (students) => {
   const minScore = Math.min(...scores);
   const avgScore = scores.reduce((a, b) => a + b, 0) / totalStudents;
 
-  // Add Rank and Percentile
+  // Add Rank and Percentile (Optimized O(N) approach)
   let currentRank = 1;
+  let countOfGreater = 0; // Count of students with strictly greater score
+
   const processed = sorted.map((student, index) => {
     // Check for tie with previous student
     if (index > 0) {
       if (student.score < sorted[index - 1].score) {
         // If score is lower, rank is the current position (1-indexed)
         currentRank = index + 1;
+        // countOfGreater is simply the index (number of students before this one)
+        countOfGreater = index;
       }
-      // If score is equal, rank stays the same as currentRank
+      // If score is equal, rank stays the same, and countOfGreater stays the same
     } else {
       currentRank = 1;
+      countOfGreater = 0;
     }
 
     // Percentile: (Students with score <= studentScore / Total) * 100
-    const studentsWithLessOrEqual = sorted.filter(s => s.score <= student.score).length;
+    // In a sorted descending list, students with score <= current are (Total - countOfGreater)
+    const studentsWithLessOrEqual = totalStudents - countOfGreater;
     const classPercentile = (studentsWithLessOrEqual / totalStudents) * 100;
 
     // Predicted Percentile (National Standard)

@@ -1,16 +1,30 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import { Trophy, Target, Award, ArrowUp, ArrowDown, Activity, LineChart as ChartIcon, BarChart2, Home } from 'lucide-react';
+import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Leaderboard from './Leaderboard';
 import CollegePredictor from './CollegePredictor';
 
 const Dashboard = ({ studentHistory, studentId, allTests, onBack }) => {
-    const currentTest = studentHistory[studentHistory.length - 1];
-    const previousTest = studentHistory.length > 1 ? studentHistory[studentHistory.length - 2] : null;
+    const navigate = useNavigate();
+    // State to track which test is currently being viewed
+    // Default to the last (latest) test in history
+    const [selectedTestIndex, setSelectedTestIndex] = React.useState(studentHistory.length - 1);
 
-    // Trend Data
+    const currentTest = studentHistory[selectedTestIndex];
+    // Previous test is the one before the selected one, if it exists
+    const previousTest = selectedTestIndex > 0 ? studentHistory[selectedTestIndex - 1] : null;
+
+    // Handle test selection change
+    const handleTestChange = (event) => {
+        const newIndex = parseInt(event.target.value, 10);
+        setSelectedTestIndex(newIndex);
+    };
+
+    // Trend Data (Show full history for context)
     const trendData = studentHistory.map(h => ({
         name: h.testName,
         Score: h.score,
@@ -34,13 +48,77 @@ const Dashboard = ({ studentHistory, studentId, allTests, onBack }) => {
             {/* Navbar */}
             <nav>
                 <div className="nav-content">
+                    {/* Left side: User Greeting */}
                     <div>
                         <h2 className="text-2xl font-bold text-white">Hello, <span className="text-gradient">{currentTest.name || studentId}</span></h2>
-                        <p id="analysisMeta">ID: {studentId} • Analysis Result for {currentTest.testName}</p>
+                        <p id="analysisMeta" style={{ margin: 0, opacity: 0.7 }}>ID: {studentId}</p>
                     </div>
-                    <button className="btn-ghost flex items-center gap-2" onClick={onBack}>
-                        <Home size={16} /> Home
-                    </button>
+
+                    {/* Right side: Actions */}
+                    <div className="flex items-center gap-8"> {/* Horizontal layout with large gap */}
+
+                        {/* Test Switcher Pill (Minimalistic MUI Version) */}
+                        <div className="glass-card flex items-center"
+                            style={{
+                                borderRadius: '50px',
+                                padding: '0.7rem 2rem', // Increased internal padding
+                                background: 'rgba(255, 255, 255, 0.03)',
+                                border: '1px solid rgba(255, 255, 255, 0.15)',
+                                gap: '1.5rem' // More spacing inside between label and dropdown
+                            }}>
+                            <span className="text-xs uppercase tracking-wider font-semibold" style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.6)', whiteSpace: 'nowrap' }}>Result:</span>
+                            <FormControl variant="standard" sx={{ minWidth: 100, margin: 0 }}>
+                                <Select
+                                    value={selectedTestIndex}
+                                    onChange={handleTestChange}
+                                    disableUnderline
+                                    sx={{
+                                        color: 'white',
+                                        fontSize: '0.9rem',
+                                        fontWeight: '500',
+                                        '.MuiSelect-icon': { color: 'rgba(255, 255, 255, 0.7)' },
+                                        '& .MuiSelect-select': { paddingRight: '24px !important', paddingBottom: '2px', paddingTop: '2px' }
+                                    }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                bgcolor: '#0f0f13',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                color: 'white',
+                                                '& .MuiMenuItem-root': {
+                                                    fontSize: '0.9rem',
+                                                    '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.05)' },
+                                                    '&.Mui-selected': { bgcolor: 'rgba(255, 255, 255, 0.1)', '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.15)' } }
+                                                }
+                                            }
+                                        }
+                                    }}
+                                >
+                                    {studentHistory.map((test, index) => (
+                                        <MenuItem key={index} value={index}>
+                                            {test.testName}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </div>
+
+                        <button
+                            className="btn-neon flex items-center gap-2"
+                            onClick={() => navigate('/advanced-analysis', { state: { testData: currentTest, studentId } })}
+                            style={{
+                                padding: '0.7rem 1.5rem',
+                                border: '1px solid rgba(0, 243, 255, 0.4)',
+                                boxShadow: '0 0 15px rgba(0, 243, 255, 0.2)'
+                            }}
+                        >
+                            <Activity size={16} /> Deep Analysis
+                        </button>
+
+                        <button className="btn-ghost flex items-center gap-2" onClick={onBack} style={{ padding: '0.7rem 1.5rem' }}>
+                            <Home size={16} /> Home
+                        </button>
+                    </div>
                 </div>
             </nav>
 
@@ -77,6 +155,7 @@ const Dashboard = ({ studentHistory, studentId, allTests, onBack }) => {
                     <div className="stat-icon"><Award size={24} /></div>
                 </div>
 
+                
                 {/* Trend */}
                 <div className="glass-card stat-card">
                     <div className="w-full flex flex-col items-center justify-center">

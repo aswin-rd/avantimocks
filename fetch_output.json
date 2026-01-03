@@ -1,0 +1,463 @@
+{
+  "studentId": "2631206382",
+  "testDetails": {
+    "percentage": "60%",
+    "name": "Mock-01-G12-PCM",
+    "date": "2025-12-01"
+  },
+  "overallPerformance": {
+    "Marks": "180",
+    "Questions Skipped": "15",
+    "Wrong Answers": "12",
+    "Correct Answers": "48",
+    "Partially Correct": "0",
+    "Percentage": "60",
+    "Accuracy": "80",
+    "Topper Marks": "234",
+    "Percentile": "97.69",
+    "Rank": "15.0"
+  },
+  "subjectPerformance": [
+    {
+      "subject": "Chemistry",
+      "stats": {
+        "Marks": "57",
+        "Questions Skipped": "2",
+        "Wrong Answers": "7",
+        "Correct Answers": "16",
+        "Partially Correct": "0",
+        "Percentage": "57",
+        "Accuracy": "69.57",
+        "Topper Marks": "82",
+        "Percentile": "96.05",
+        "Rank": "24.0"
+      },
+      "chapters": [
+        {
+          "chapter": "11C1 - Mole concept",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11C15 - General Organic Chemistry",
+          "score": "8",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11C16 - Hydrocarbons",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11C2 - Atomic Structure",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11C3 - Periodic Table",
+          "score": "-1",
+          "accuracy": "0",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11C4 - Chemical Bonding",
+          "score": "3",
+          "accuracy": "50",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11C6 - Thermodynamics",
+          "score": "-1",
+          "accuracy": "0",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11C8 - Ionic Equilibrium",
+          "score": "-1",
+          "accuracy": "0",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11C9 - Redox reaction",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12C18 - Solution and colligative properties",
+          "score": "-1",
+          "accuracy": "0",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12C20 - Electrochemistry",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "12C21 - Chemical Kinetics",
+          "score": "3",
+          "accuracy": "50",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12C26 - d and f block elements",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "12C27 - Coordination compounds",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12C34 - Biomolecules and polymer",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12C35 - Aldehydes, Ketones, Carboxylic Acids",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12C37 - Haloalkanes & Haloarenes",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12C38 - Alcohol, Phenol and Ether",
+          "score": "3",
+          "accuracy": "50",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12C39 -Amines",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12C43 - Principles Related to Practical Chemistry",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "Periodic Properties of Elements",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        }
+      ]
+    },
+    {
+      "subject": "Maths",
+      "stats": {
+        "Marks": "57",
+        "Questions Skipped": "7",
+        "Wrong Answers": "3",
+        "Correct Answers": "15",
+        "Partially Correct": "0",
+        "Percentage": "57",
+        "Accuracy": "83.33",
+        "Topper Marks": "85",
+        "Percentile": "97.86",
+        "Rank": "13.0"
+      },
+      "chapters": [
+        {
+          "chapter": "11M10 - Circle",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "11M11 - Conic Sections",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "11M12 - Statistics",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11M2 - Sets, Relations and Functions",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11M4 - Quadratic Equation",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11M5 - Complex Number",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11M6 - Permutation & Combination",
+          "score": "-1",
+          "accuracy": "0",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11M8 - Sequence & Series",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "11M9 - Straight Line",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12M15 - Function & Inverse Trigonometric",
+          "score": "8",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12M16 - Matrices & Determinant",
+          "score": "-1",
+          "accuracy": "0",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12M17 - Limits, Continuity & Derivability",
+          "score": "8",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12M18 - Application of Derivatives",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "12M20 - Definite Integration & Its App.",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "12M21 - Differential Equation",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12M22 - Vector & 3-D",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12M23 - Probability",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "3 Dimensional Geometry",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "Binomial Theorem",
+          "score": "-1",
+          "accuracy": "0",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "Definite Integration",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "Indefinite Integration",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "Matrices and Determinants",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "Sequence and Series",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        }
+      ]
+    },
+    {
+      "subject": "Physics",
+      "stats": {
+        "Marks": "66",
+        "Questions Skipped": "6",
+        "Wrong Answers": "2",
+        "Correct Answers": "17",
+        "Partially Correct": "0",
+        "Percentage": "66",
+        "Accuracy": "89.47",
+        "Topper Marks": "90",
+        "Percentile": "96.54",
+        "Rank": "20.0"
+      },
+      "chapters": [
+        {
+          "chapter": "11P1 - Unit & Dimension",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11P10 - Centre of mass",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "11P11 - Rigid Body Dynamics",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "11P12 - Gravitation",
+          "score": "-1",
+          "accuracy": "0",
+          "attemptRate": "50"
+        },
+        {
+          "chapter": "11P13 - Elasticity and Viscosity",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11P14 - Fluid Mechanics",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "11P16 - KTG & Thermodynamics",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "50"
+        },
+        {
+          "chapter": "11P19 - Simple Harmonic Motion",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11P3 - Rectilinear Motion",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11P6 - Newtons laws of motion",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "11P8 - Work, Power & Energy",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12P22 - Electrostatics",
+          "score": "0",
+          "accuracy": "0",
+          "attemptRate": "0"
+        },
+        {
+          "chapter": "12P23 - Current electricity",
+          "score": "8",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12P24 - Capacitance",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12P25 - Magnetic effects of electric current and magnetism",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12P27 - Alternating current",
+          "score": "-1",
+          "accuracy": "0",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12P28 - Geometrical Optics",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12P29 - Wave Optics",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12P30 - Modern Physics",
+          "score": "8",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12P32 - Semiconductor",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        },
+        {
+          "chapter": "12P33 - Electromagnetic Wave",
+          "score": "4",
+          "accuracy": "100",
+          "attemptRate": "100"
+        }
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Landing from './components/Landing';
 import Dashboard from './components/Dashboard';
 import Archive from './components/Archive';
+import AdvancedAnalysis from './components/AdvancedAnalysis';
 import { Analytics } from "@vercel/analytics/react"
 import { matchStudentAcrossTests, fetchGoogleSheet } from './utils/dataProcessor';
 import LoadingScreen from './components/LoadingScreen';
@@ -115,6 +116,10 @@ function App() {
 
         <Route path="/archive" element={
           <Archive onBack={handleBack} />
+        } />
+
+        <Route path="/advanced-analysis" element={
+          <AdvancedAnalysis />
         } />
       </Routes>
     </div>

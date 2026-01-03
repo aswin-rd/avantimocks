@@ -81,6 +81,35 @@ body::before {
   -webkit-text-fill-color: transparent;
 }
 
+/* Base Utilities */
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.gap-6 {
+  gap: 1.5rem;
+}
+
+.gap-8 {
+  gap: 2rem;
+}
+
 .fade-in {
   animation: fadeIn 0.5s ease-out forwards;
 }

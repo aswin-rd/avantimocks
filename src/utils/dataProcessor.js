@@ -48,6 +48,7 @@ const findHeaderAndParse = (rawRows) => {
         else if (['correct', 'right'].some(k => cell.includes(k)) && !cell.includes('incorrect')) columnMap.correct = idx;
         else if (['wrong', 'incorrect', 'negative'].some(k => cell.includes(k))) columnMap.wrong = idx;
         else if (['totalmarks', 'score'].some(k => cell.includes(k))) columnMap.score = idx;
+        else if (cell.includes('reporturl') || cell.includes('reportlink') || (idx === 6 && cell.includes('report'))) columnMap.reportUrl = idx;
       });
       break; // Found header
     }
@@ -56,7 +57,7 @@ const findHeaderAndParse = (rawRows) => {
   if (headerRowIndex === -1) {
     console.warn('No clear header row found. Assuming Row 1 (Index 0) is header or data starts immediately.');
     headerRowIndex = 0;
-    columnMap = { id: 0, series: 1, name: 2, correct: 3, wrong: 4, score: 5 }; // Fallback
+    columnMap = { id: 0, series: 1, name: 2, correct: 3, wrong: 4, score: 5, reportUrl: 6 }; // Fallback
   }
 
   // 2. Extract Data
@@ -82,6 +83,10 @@ const findHeaderAndParse = (rawRows) => {
 
     // FORCED CALCULATION
     newRow.score = (newRow.correct * 4) - (newRow.wrong * 1);
+
+    if (columnMap.reportUrl !== undefined) {
+      newRow.reportUrl = String(row[columnMap.reportUrl] || '').trim();
+    }
 
     cleanedData.push(newRow);
   }
@@ -131,22 +136,24 @@ export const fetchGoogleSheet = async (url) => {
 
     workbook.SheetNames.forEach(sheetName => {
       const sheet = workbook.Sheets[sheetName];
-      // Skip empty or hidden sheets if needed, but let's assume all are valid tests
       const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
       if (rawRows.length < 2) return; // Skip empty sheets
 
-      try {
-        const cleaned = findHeaderAndParse(rawRows); // Reuse our robust logic
-        if (cleaned.length > 0) {
-          // Calculate stats here or let processClassData do it?
-          // app expects { name, data: { students: [], stats: {} } }
-          // processClassData returns { students, stats }
+      // Extract Report URL from Row 0 (Scanning for http link)
+      let reportBaseUrl = null;
+      if (rawRows[0]) {
+        const foundUrl = rawRows[0].find(cell => typeof cell === 'string' && cell.includes('http'));
+        if (foundUrl) reportBaseUrl = foundUrl.trim();
+      }
 
-          // Helper to process
+      try {
+        const cleaned = findHeaderAndParse(rawRows, sheetName);
+        if (cleaned.length > 0) {
           const processed = processClassData(cleaned);
           allTests.push({
             name: sheetName,
+            reportBaseUrl, // Store base URL found in header
             data: processed
           });
         }
@@ -221,13 +228,25 @@ export const processClassData = (students) => {
 
 // Matches columns across multiple files (Test 1, Test 2...)
 export const matchStudentAcrossTests = (studentId, allTestsData) => {
-  // allTestsData form: [{ name: "Test 1.xlsx", data: { students: [], stats: {} } }, ...]
+  // allTestsData form: [{ name: "Test 1.xlsx", reportBaseUrl, data: { students: [], stats: {} } }, ...]
 
   const history = allTestsData.map(test => {
     const student = test.data.students.find(s => s.id === studentId);
     if (!student) return null;
+
+    // Determine report URL: Specific student URL > Contstructed from Base URL > null
+    let finalReportUrl = null;
+    if (student.reportUrl) {
+      finalReportUrl = student.reportUrl;
+    } else if (test.reportBaseUrl) {
+      // Append student ID to base URL
+      finalReportUrl = `${test.reportBaseUrl}${test.reportBaseUrl.endsWith('/') ? '' : '/'}${studentId}`;
+    }
+
     return {
       testName: test.name.replace('.xlsx', ''),
+      reportUrl: finalReportUrl,
+      reportBaseUrl: test.reportBaseUrl,
       ...student,
       classAvg: test.data.stats.avgScore,
       topperScore: test.data.stats.maxScore

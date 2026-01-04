@@ -107,57 +107,135 @@ export const analyzeQuadrant = (chapters) => {
 };
 
 // --- 4. Insights Generator ---
+// --- 4. Insights Generator ---
 export const generateInsights = (overall, subjects) => {
     const tips = [];
 
-    // Overall Strategy
+    // 1. Accuracy - Volume Balance
     if (parseFloat(overall.Accuracy) > 85 && parseFloat(overall.Percentage) < 60) {
-        tips.push({ title: "High Accuracy, Low Volume", text: "You are playing too safe. Your accuracy is elite, but you aren't attempting enough questions. Try to increase your attempt rate by 10-15% in the next mock." });
-    }
-    if (parseFloat(overall.Accuracy) < 70) {
-        tips.push({ title: "Negative Marking Alert", text: "You are losing significant marks to guesses. Focus on eliminating 'Trap' chapters where you attempt a lot but score low." });
+        tips.push({
+            title: "Strategy Alert: Play Bolder",
+            text: "Your accuracy is elite (>85%), but you aren't attempting enough. Safe to increase attempts by 10-15% next mock."
+        });
+    } else if (parseFloat(overall.Accuracy) < 75) {
+        tips.push({
+            title: "Negative Marking Alert",
+            text: "You are losing rank to guesses. Prioritize eliminating 'High Risk' chapters."
+        });
     }
 
-    // Subject Specifics
-    subjects.forEach(sub => {
-        const shi = calculateSHI(sub.stats);
-        if (shi.score < 40) {
-            tips.push({ title: `Critical: ${sub.name}`, text: `${sub.name} needs immediate intervention. It is dragging down your total rank.` });
-        }
+    // 2. Positive Reinforcement (High Performers)
+    const strongSubjects = subjects.filter(s => calculateSHI(s.stats).score > 75);
+    if (strongSubjects.length > 0) {
+        const names = strongSubjects.map(s => s.name).join(' & ');
+        tips.push({
+            title: `Dominating ${names}`,
+            text: `Your foundation in ${names} is rock solid. Focus mainly on maintaining speed here.`
+        });
+    }
 
-        // Check for specific chapter patterns
-        const traps = sub.chapters.filter(c => parseFloat(c.attempt) > 80 && parseFloat(c.accuracy) < 40);
-        if (traps.length > 0) {
+    // 3. Critical Intervention
+    const criticalSub = subjects.find(s => calculateSHI(s.stats).score < 40);
+    if (criticalSub) {
+        tips.push({
+            title: `Critical: ${criticalSub.name}`,
+            text: `${criticalSub.name} is dragging down your total rank. Immediate intervention needed.`
+        });
+    }
+
+    // 4. Trap Detection (Only if no critical alert to avoid noise)
+    if (!criticalSub) {
+        const allTraps = subjects.flatMap(s => s.chapters.filter(c => parseFloat(c.attempt) > 80 && parseFloat(c.accuracy) < 40));
+        if (allTraps.length > 0) {
             tips.push({
-                title: `${sub.name} Traps`,
-                text: `Stop blind attempts in: ${traps.map(c => c.name).slice(0, 3).join(', ')}. Revising these concepts > solving new ones.`
+                title: "Trap Detection",
+                text: `Stop blind attempts in: ${allTraps.slice(0, 3).map(c => c.name).join(', ')}.`
             });
         }
-    });
+    }
 
-    return tips;
+    return tips.slice(0, isHighPerformer(overall) ? 4 : 5);
 };
 
-// --- 5. Action Plan Generator ---
-export const generateActionPlan = (subjects) => {
-    // Identify top 3 weak areas
-    let weakChapters = [];
+// Guardrail Helper
+const isHighPerformer = (overall) => parseFloat(overall.Percentile) >= 97;
+/**
+ * Generates actionable improvement plan
+ */
+export const generateActionPlan = (subjects, overall) => {
+    let plan = [];
+    // ... existing logic but enhanced with categories ...
+    // Actually, let's keep the existing logic simpler for now and just add the new function below.
+    // I Will rewrite generateActionPlan to include the categorization logic directly in the object.
+
     subjects.forEach(sub => {
         sub.chapters.forEach(chap => {
-            const cls = classifyChapter(chap);
-            if (cls.status === "Trap" || cls.status === "Weak") {
-                weakChapters.push({ ...chap, subject: sub.name, reason: cls.status });
+            const classification = classifyChapter(chap);
+            // ... (rest of logic handles filtering)
+            if (classification.status === 'Trap' || classification.status === 'Weak') {
+                // Calculate Potential
+                let potential = 0;
+                if (classification.status === 'Trap') potential = Math.abs(Number(chap.score)) + 4; // Recover lost + gain marks
+                if (classification.status === 'Weak') potential = 4; // Gain marks
+
+                plan.push({
+                    subject: sub.name,
+                    name: chap.name,
+                    reason: classification.status,
+                    potential: potential,
+                    // New: Add category
+                    category: classification.status === 'Trap' ? 'Immediate' : 'Strategic'
+                });
             }
         });
     });
 
-    // Sort by "Potential Loss" (High attempt but low score means high pain)
-    weakChapters.sort((a, b) => {
-        // Prioritize Trap chapters (high attempt, low accuracy)
-        if (a.reason === "Trap" && b.reason !== "Trap") return -1;
-        if (b.reason === "Trap" && a.reason !== "Trap") return 1;
-        return parseFloat(a.score) - parseFloat(b.score);
+    // Add missed opportunities (Skipped high weightage?) -> For now based on attempt rate
+    subjects.forEach(sub => {
+        sub.chapters.forEach(chap => {
+            if (Number(chap.attempt) === 0 || Number(chap.attempt) < 50) {
+                // Check if already in plan (Weak might cover it)
+                const exists = plan.find(p => p.name === chap.name);
+                if (!exists) {
+                    plan.push({
+                        subject: sub.name,
+                        name: chap.name,
+                        reason: 'Missed',
+                        potential: 4,
+                        category: 'Strategic'
+                    });
+                }
+            }
+        });
     });
 
-    return weakChapters.slice(0, 5); // Return top 5 actionable chapters
+    return plan.sort((a, b) => b.potential - a.potential).slice(0, overall.Percentile >= 97 ? 6 : 10);
+};
+
+export const calculateAdvancedStats = (subjects) => {
+    let totalNegative = 0;
+    let negativeChapters = [];
+    let missedOpp = 0;
+    let missedChapters = [];
+
+    subjects.forEach(sub => {
+        sub.chapters.forEach(chap => {
+            const score = Number(chap.score);
+            if (score < 0) {
+                totalNegative += Math.abs(score);
+                negativeChapters.push({ ...chap, subject: sub.name });
+            }
+            if (Number(chap.attempt) === 0) {
+                missedOpp += 4; // Assuming 4 marks per question potential
+                missedChapters.push({ ...chap, subject: sub.name });
+            }
+        });
+    });
+
+    return {
+        totalNegative,
+        negativeChapters,
+        missedOpp,
+        missedChapters
+    };
 };

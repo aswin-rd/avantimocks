@@ -44,7 +44,7 @@ import {
     ResponsiveContainer,
     Cell
 } from 'recharts';
-import { calculateSHI, classifyChapter, analyzeQuadrant, generateInsights, generateActionPlan, calculateAdvancedStats } from '../utils/analysisUtils';
+import { calculateSHI, classifyChapter, analyzeQuadrant, generateInsights, generateActionPlan, calculateAdvancedStats, getQuestionDetails } from '../utils/analysisUtils';
 
 const { Title, Text, Paragraph } = Typography;
 const { Content } = Layout;
@@ -61,6 +61,77 @@ const AdvancedAnalysis = () => {
     const [targetUrl, setTargetUrl] = useState(null);
     const [insights, setInsights] = useState([]);
     const [actionPlan, setActionPlan] = useState([]);
+
+    const [hoveredData, setHoveredData] = useState(null);
+    const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 });
+    const [loadingHover, setLoadingHover] = useState(false);
+
+    // Calculate global starting indices for subjects to map questions correctly
+    const subjectGlobalOffsets = React.useMemo(() => {
+        if (!reportData) return {};
+        let count = 0;
+        const offsets = {};
+        reportData.subjects.forEach((sub, idx) => {
+            offsets[sub.name] = count;
+            count += sub.chapters.length;
+        });
+        return offsets;
+    }, [reportData]);
+
+    const handleRowHover = async (record, event, subjectName, indexInSubject) => {
+        // Only show for Wrong or Unattempted/Neutral (mapped to unattempted logic)
+        // Check generic logic: classification 'Trap' (Wrong) or 'Unattempted' (based on attempt rate 0)
+        // The classification logic is locally inside renderSubjectTab, let's replicate basic check or rely on status.
+        // Simplified: Always fetch? No, user said "which is un attempted or wrong".
+
+        const acc = parseFloat(record.accuracy);
+        const att = parseFloat(record.attempt);
+        // Replicating classifyChapter for "Trap" or "Unattempted"
+        const isTrap = att > 80 && acc < 30;
+        const isUnattempted = att === 0;
+
+        if (!isTrap && !isUnattempted) {
+            setHoveredData(null);
+            return;
+        }
+
+        const globalIndex = (subjectGlobalOffsets[subjectName] || 0) + indexInSubject + 1; // 1-based
+
+        // Position card near cursor
+        const x = event.clientX + 20;
+        const y = event.clientY + 20;
+        setHoverPos({ x, y });
+
+        if (hoveredData && hoveredData.index === globalIndex) return; // Already showing
+
+        setLoadingHover(true);
+        try {
+            // Use targetUrl as quizUrl
+            const details = await getQuestionDetails(targetUrl, globalIndex);
+            setHoveredData({ ...details, index: globalIndex });
+        } catch (e) {
+            console.error(e);
+            setHoveredData({ error: "Details unavailable", index: globalIndex });
+        } finally {
+            setLoadingHover(false);
+        }
+    };
+
+    const handleRowLeave = () => {
+        setHoveredData(null);
+    };
+
+    // ... inside renderSubjectTab ...
+    // Update Table props:
+    /*
+        onRow={(record, index) => ({
+            onMouseEnter: (event) => handleRowHover(record, event, sub.name, index),
+            onMouseLeave: handleRowLeave,
+        })}
+    */
+
+
+
 
     // Initialize targetUrl from props or logic
     useEffect(() => {
@@ -256,6 +327,10 @@ const AdvancedAnalysis = () => {
                             columns={columns}
                             pagination={{ pageSize: 8 }}
                             size="middle"
+                            onRow={(record, index) => ({
+                                onMouseEnter: (event) => handleRowHover(record, event, sub.name, index),
+                                onMouseLeave: handleRowLeave,
+                            })}
                         />
                     </Card>
                 </Col>
@@ -275,6 +350,71 @@ const AdvancedAnalysis = () => {
             }}
         >
             <div className="fade-in" style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+
+                {/* Mouse Hover Card */}
+                {hoveredData && (
+                    <div
+                        style={{
+                            position: 'fixed',
+                            left: hoverPos.x,
+                            top: hoverPos.y,
+                            zIndex: 1000,
+                            maxWidth: 350,
+                            pointerEvents: 'none'
+                        }}
+                    >
+                        <Card
+                            className="glass-card"
+                            size="small"
+                            loading={loadingHover}
+                            title={loadingHover ? "Loading..." : <span style={{ color: 'white' }}>Question {hoveredData.index}</span>}
+                            bordered={false}
+                            style={{
+                                background: 'rgba(20, 20, 30, 0.95)',
+                                backdropFilter: 'blur(10px)',
+                                boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                color: 'white'
+                            }}
+                            headStyle={{ borderBottom: '1px solid rgba(255,255,255,0.1)', color: 'white' }}
+                        >
+                            {!loadingHover && !hoveredData.error && (
+                                <Space direction="vertical" size="small" style={{ width: '100%' }}>
+                                    <div style={{ color: '#e0e0e0', fontSize: '13px', marginBottom: 8 }} dangerouslySetInnerHTML={{ __html: hoveredData.questionText }} />
+
+                                    {/* Options */}
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                        {hoveredData.options.map((opt, i) => (
+                                            <div key={i} style={{
+                                                padding: '6px 8px',
+                                                background: i === (hoveredData.correctAnswerIndex) ? 'rgba(82, 196, 26, 0.15)' : 'rgba(255,255,255,0.03)',
+                                                borderRadius: 6,
+                                                border: i === (hoveredData.correctAnswerIndex) ? '1px solid #237804' : '1px solid transparent'
+                                            }}>
+                                                <Text style={{
+                                                    color: i === (hoveredData.correctAnswerIndex) ? '#73d13d' : 'rgba(255,255,255,0.6)',
+                                                    fontSize: 12,
+                                                    fontWeight: i === (hoveredData.correctAnswerIndex) ? 'bold' : 'normal'
+                                                }}>
+                                                    <span style={{ marginRight: 6 }}>{String.fromCharCode(65 + i)}.</span>
+                                                    <span dangerouslySetInnerHTML={{ __html: opt }} />
+                                                </Text>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 4 }}>Solution:</Text>
+                                        <div style={{ color: '#aaa', fontSize: 11, lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: hoveredData.solutionText }} />
+                                    </div>
+                                </Space>
+                            )}
+                            {!loadingHover && hoveredData.error && (
+                                <Text type="danger">{hoveredData.error}</Text>
+                            )}
+                        </Card>
+                    </div>
+                )}
 
                 {/* Header */}
                 <Row justify="space-between" align="middle" style={{ marginBottom: 32 }}>

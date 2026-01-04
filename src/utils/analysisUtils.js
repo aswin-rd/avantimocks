@@ -239,3 +239,93 @@ export const calculateAdvancedStats = (subjects) => {
         missedChapters
     };
 };
+
+// --- API Helper Functions ---
+
+/**
+ * Extracts the Quiz ID from the provided Quiz URL.
+ * @param {string} quizUrl 
+ * @returns {string|null} The Quiz ID or null if not found.
+ */
+export const extractQuizId = (quizUrl) => {
+    try {
+        const urlObj = new URL(quizUrl);
+        // Support two patterns:
+        // 1. /quiz/QUIZ_ID
+        // 2. .../EnableStudents_QUIZ_ID/...
+        // Regex to capture the ID (alphanumeric, typically 24 chars for MongoDB IDs)
+        const match = urlObj.pathname.match(/(?:quiz\/|EnableStudents_)([a-zA-Z0-9]+)/);
+        if (match && match[1]) {
+            return match[1];
+        }
+        return null;
+    } catch (e) {
+        console.error("Invalid Quiz URL:", quizUrl, e);
+        return null;
+    }
+};
+
+const QUIZ_CACHE = {};
+
+/**
+ * Fetches the full quiz data or returns it from cache.
+ * @param {string} quizId 
+ * @returns {Promise<Object>} The quiz data JSON.
+ */
+export const fetchQuizData = async (quizId) => {
+    if (QUIZ_CACHE[quizId]) {
+        return QUIZ_CACHE[quizId];
+    }
+
+    const apiUrl = `https://7jfe7qtfxd.execute-api.ap-south-1.amazonaws.com/quiz/${quizId}?omr_mode=false&single_page_mode=false`;
+
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`API call failed: ${response.status}`);
+        }
+        const data = await response.json();
+        QUIZ_CACHE[quizId] = data;
+        return data;
+    } catch (error) {
+        console.error("Error fetching quiz data:", error);
+        throw error;
+    }
+};
+
+/**
+ * Retrieves the specific question details by 1-based index (questionNumber).
+ * @param {string} quizUrl 
+ * @param {number} questionNumber 1-based index
+ * @returns {Promise<Object>} The formatted question object.
+ */
+export const getQuestionDetails = async (quizUrl, questionNumber) => {
+    const quizId = extractQuizId(quizUrl);
+    if (!quizId) throw new Error("Could not extract Quiz ID");
+
+    const quizData = await fetchQuizData(quizId);
+
+    // Flatten all questions from response.question_sets[].questions
+    let allQuestions = [];
+    if (quizData.question_sets && Array.isArray(quizData.question_sets)) {
+        quizData.question_sets.forEach(set => {
+            if (set.questions && Array.isArray(set.questions)) {
+                allQuestions = allQuestions.concat(set.questions);
+            }
+        });
+    }
+
+    const index = questionNumber - 1;
+    if (index < 0 || index >= allQuestions.length) {
+        throw new Error(`Question number ${questionNumber} out of range.`);
+    }
+
+    const q = allQuestions[index];
+
+    return {
+        questionText: q.text,
+        options: q.options ? q.options.map(opt => opt.text) : [],
+        correctAnswerIndex: q.correct_answer && q.correct_answer.length > 0 ? q.correct_answer[0] : null,
+        solutionText: q.solution && q.solution.length > 0 ? q.solution[0] : "Solution not available."
+    };
+};
